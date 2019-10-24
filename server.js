@@ -24,16 +24,16 @@ app.get('/', function (req, res) {
   });
 });
 let arrUser = [];
-class User {
-  constructor(id, name, rom, message, p, alpha) {
-    this.id = id,
-      this.name = name,
-      this.rom = rom,
-      this.message = message,
-      this.p = p,
-      this.alpha = alpha
-  }
-}
+// class User {
+//   constructor(id, name, rom, message, p, alpha) {
+//     this.id = id,
+//       this.name = name,
+//       this.rom = rom,
+//       this.message = message,
+//       this.p = p,
+//       this.alpha = alpha
+//   }
+// }
 
 io.on('connection', function (socket) {
   socket.join(socket.id);
@@ -47,7 +47,7 @@ io.on('connection', function (socket) {
     let idRemove = arrUser.findIndex(function (item) {
       return item == socket.id;
     });
-    arrUser.splice(idRemove, 1);
+    arrUser.splice(idRemove, 1); // xoa ten client tren may client dang online 
     console.log(socket.id + ' ngat ket noi ! ');
     console.log(arrUser);
     io.emit("send-all-id-client", arrUser);
@@ -57,7 +57,7 @@ io.on('connection', function (socket) {
   socket.on("JOIN", (message) => {
     // ---- Sau khi join vao rom thi se sinh ra so nguyen to P va alpha -----
     let p = sinhNguyenTo(200);
-    let alpha =  sinhAnpha(p);
+    let alpha = sinhAnpha(p);
     let publicNumber = {
       p: p,
       alpha: alpha
@@ -76,13 +76,13 @@ io.on('connection', function (socket) {
     socket.on("send-public-key-to-server", (publicKey) => {
       console.log(publicKey)
       socket.to(message.id).emit('send-public-key-to-client', publicKey);
-      
+
     });
 
     //    ---- recive Public Key 2 Sau khi Client 1 nhan public Key ------
-    socket.on("send-server-two", (publicKeyClient2) => {
+    socket.on("send-public-key-to-server-2", (publicKeyClient2) => {
       console.log(publicKeyClient2 + " public Key Client 2")
-      socket.to(message.id).emit('send-public-key-to-client-two', publicKeyClient2);
+      socket.to(message.id).emit('send-public-key-to-client-2', publicKeyClient2);
     });
 
   });
@@ -94,7 +94,8 @@ io.on('connection', function (socket) {
 
   /////   ----- Sinh so nguyen to P ------
   function sinhNguyenTo(max) {
-    var sieve = [],i, j, primes = [];
+    var sieve = [],
+      i, j, primes = [];
     for (i = 2; i <= max; ++i) {
       if (!sieve[i]) {
         // i has not been marked -- it is prime
@@ -105,7 +106,7 @@ io.on('connection', function (socket) {
       }
     }
     //console.log(primes);
-    return primes[Math.floor(Math.random() * (primes.length-1) + 1)];
+    return primes[Math.floor(Math.random() * (primes.length - 1) + 1)];
   }
   //    ----- END Sinh so nguyen to -----
 
@@ -114,18 +115,19 @@ io.on('connection', function (socket) {
   // Ham sinh phan tu "Anpha" 
   function sinhAnpha(p) {
     analyc(p);
-    
+
     var checkTruFalse = checkpts(p, Math.floor(Math.random() * (p - 4) + 3));
     if (checkTruFalse == false) {
       checkTruFalse = checkpts(p, Math.floor(Math.random() * (p - 4) + 3));
-      if (checkTruFalse == false){
+      if (checkTruFalse == false) {
         checkTruFalse = checkpts(p, Math.floor(Math.random() * (p - 4) + 3));
       }
     }
     return checkTruFalse;
   }
-  function  sinhAP(p) {
-    return Math.floor(Math.random()*(p-2)+3);
+
+  function sinhAP(p) {
+    return Math.floor(Math.random() * (p - 2) + 3);
   }
   //    ----- ham phan tich nguyen to -----
   function analyc(p) {
