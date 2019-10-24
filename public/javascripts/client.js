@@ -116,7 +116,7 @@ $(document).ready(() => {
 
         //   --- Gui su public key lai server ---
         socket.emit("send-public-key-to-server-2", publicKeyM2);
-
+        
     });
     //      --- Recive Public Key Client 2 ---
     socket.on("send-public-key-to-client-2", (publicKeyClient2) => {
