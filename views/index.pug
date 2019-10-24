@@ -1,0 +1,88 @@
+doctype html
+head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(http-equiv='X-UA-Compatible', content='ie=edge')
+    title server
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css')
+    link(rel="stylesheet", href="https://raw.githubusercontent.com/daneden/animate.css/master/animate.min.css")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js")
+    script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js', integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo', crossorigin='anonymous')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1', crossorigin='anonymous')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM', crossorigin='anonymous')
+    script(src="/javascripts/client.js")
+    script(src='/socket.io/socket.io.js')
+    link(rel="stylesheet", href="/css/style.css")
+    body
+        section.title-page
+            .container
+                .header
+                    h3.p-4 Demo Diffie-Human
+            .container
+                .title-group
+                    .h2 Thành viên nhóm 
+                .list-member.d-flex
+                    .content-img-member
+                        .h3.name Trang Nữ
+                        img.nu(src="./img/44.jpg", alt="nu")
+                    .content-img-member
+                        .h3.name Thương Mến
+                        img.men(src="./img/33.jpg", alt="")
+                    .content-img-member
+                        .h3.name Minh Hoàng
+                        img.hoang(src="./img/55.jpg", alt="")
+                    .content-img-member
+                        .h3.name Minh Thư
+                        img.thu(src="./img/22.jpg", alt="")
+                    .content-img-member
+                        .h3.name Văn Sự
+                        img.su(src="./img/77.jpg", alt="")
+                    .content-img-member
+
+        section
+            .container
+                .row
+                    .col-md-4.form-chat
+                        h3 User online
+                        #id-client.row
+                        #id-form-connectId.row
+                            .input-group.mb-3
+                                input#s-input-connectID.form-control(type='text', placeholder="Input ID", aria-label="Recipient's username", aria-describedby='button-addon2')
+                                .input-group-append
+                                    button#button-addon2.btn.btn-outline-secondary.s-button-connection(type='button') Connect
+                    .col-md-7.form-crew
+                        h3#s-name-and-id-user
+                        .col-12.s-form-keys
+                            h4 Khóa
+                            .key-public
+                                h5 Số nguyên tố P và phần tử sinh (p,alpha)
+                                span.content-key-public text
+                            .key-public-2
+                                h5 Public Key
+                                span.content-key-public-2 text
+                            .key-private
+                                h5 Private Key
+                                span.content-key-private text
+                            .key-serect
+                                h5 Serect Key
+                                span.content-key-serect text
+                        //- .col-12.s-form-chat
+                        //-     h4 Chat
+                        //-     .s-content-message-send
+                        //-         h5 id user
+                        //-         span.s-message-send text
+                        //-     .s-content-message-recive
+                        //-         h5 id user
+                        //-         span.s-message-recive text    
+                        //- .col-12.S-message
+                        //-     .input-group.mb-3
+                        //-         input#s-input-chat.form-control(type='text', placeholder="Your message...", aria-label="Recipient's username", aria-describedby='button-addon2')
+                        //-         .input-group-append
+                        //-             button#button-addon2.btn.btn-outline-secondary(type='button') Send
+        section.alert-connect-share-key
+            .card
+                .card-body
+                    h5.card-title Co 1 nguoi them vao rom cua ban
+                    a.btn.btn-primary#btn-add-member(href='#') OK
+
