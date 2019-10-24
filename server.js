@@ -86,6 +86,7 @@ io.on('connection', function (socket) {
     });
 
   });
+  
   /////     ----- End JOIN event -----
 
   //// Event Chat 
