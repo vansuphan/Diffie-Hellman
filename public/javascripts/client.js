@@ -11,19 +11,7 @@ $(document).ready(() => {
                 this.name = name
         }
     }
-    // function checkUser(__user){
-    //     if(!__user){
-    //         let user = new User(socket.id, listName[Math.floor(Math.random()*5)]);
-    //         localStorage.setItem("__user", JSON.stringify(user));
-    //     }else{
-    //         let user = {
-    //             id : __user.id,
-    //             name:  __user.name
-    //         }  
-    //         socket.emit("send-data-user-old", user);
-    //     }
-    //     return use;
-    // }
+
     let socket = io.connect('http://localhost:3000');
     socket.on("send-all-id-client", (arrUser) => {
         let nameId = document.getElementById('s-name-and-id-user');
@@ -79,22 +67,25 @@ $(document).ready(() => {
         document.querySelector(".content-key-public").innerText = `(${p},${alpha})`;
 
         //      --- Generate Private Key ---
-        let privateKey = Math.floor(Math.random() * (p - 4) + 3);
+        let privateKey = Math.floor(Math.random() * (p - 4) + 2);//sinhNguyenTo(Math.floor(Math.random() * (p - 3)));
 
         //      --- Render Private Key ---
         document.querySelector(".content-key-private").innerText = privateKey;
 
         //      --- Send Public Key ---
         let privateKey2 = parseInt(document.querySelector(".content-key-private").innerText);
-        socket.emit("send-public-key-to-server", (Math.pow(publicKey.alpha, privateKey2)) % publicKey.p);
-        console.log((Math.pow(publicKey.alpha, privateKey2) % publicKey.p) + " publicKey sender");
+         // g^a mod p
+        var newPublicKey = mod(publicKey.alpha,privateKey2,publicKey.p)
+        socket.emit("send-public-key-to-server", newPublicKey);
+        //socket.emit("send-public-key-to-server", (Math.pow(publicKey.alpha, privateKey2)) % publicKey.p);
 
         //      --- Render Public Key ---
-        let publicKeyM = Math.pow(publicKey.alpha, privateKey2) % publicKey.p;
-        document.querySelector(".content-key-public-2").innerText = publicKeyM;
+
+        document.querySelector(".content-key-public-2").innerText = newPublicKey;
 
 
     });
+
     //    --- Recive Public Key Client 1 ---
     socket.on("send-public-key-to-client", (recivePublicKey) => {
         console.log(recivePublicKey + " ben A");
@@ -103,40 +94,50 @@ $(document).ready(() => {
         console.log(publicKeyMyself + " public ben B");
 
         //   --- Caculator Serect Key ---
-        let serectKey = ((parseInt(recivePublicKey)) ** (publicKeyMyself)) % publicNumberClientAll.p;
+        // let serectKey = ((parseInt(recivePublicKey)) ** (publicKeyMyself)) % publicNumberClientAll.p;
+        // g^a mod p
+        // mod(g, a, p)
+        //mod(17,19,31)
+        let serectKey = mod(parseInt(recivePublicKey),publicKeyMyself,publicNumberClientAll.p);
         console.log("serect: B " + serectKey);
 
         //   --- Render Serect Key ---
         document.querySelector(".content-key-serect").innerText = serectKey;
 
-        //   --- Send to Public Key 2 ---
-        //  Sau khi Client 2 nhan duoc public Key ben Client 1 thi Client 2 gửi lại public Key cho Client 2 
-        let publicKeyM2 = parseInt(document.querySelector(".content-key-public-2").innerText);
-        console.log("Public Client 2: " + publicKeyM2);
-
-        //   --- Gui su public key lai server ---
-        socket.emit("send-public-key-to-server-2", publicKeyM2);
+        //      ------- display flex --------
+        document.querySelector(".alert-connect-share-key").style.display = "flex";
+        
         
     });
-    //      --- Recive Public Key Client 2 ---
-    socket.on("send-public-key-to-client-2", (publicKeyClient2) => {
-        //  ----- Get Private Key form UI Client 2 ----
-        let privateKeyClient2 = parseInt(document.querySelector(".content-key-private").innerText);
-        //  ---- Tinh Serect Key Client 2  ----
-        let serectKeyClient2 = Math.pow(publicKeyClient2, privateKeyClient2) % publicNumberClientAll.p;
-        // ---- Render Serect Key ---- 
-        document.querySelector('.content-key-serect').innerText = serectKeyClient2;
-    });
-    //          ---- Thu Tao su kien bang click ----
-    // document.getElementById("btn-add-member").addEventListener("click",()=>{
-    //    //   --- Send to Public Key 2 ---
-    //     //  Sau khi Client 2 nhan duoc public Key ben Client 1 thi Client 2 gửi lại public Key cho Client 2 
-    //     let publicKeyM2 = parseInt(document.querySelector(".content-key-public-2").innerText);
-    //     socket.emit("send-public-key-to-server-2", publicKeyM2);
-    //     console.log("Public Client 2: " + publicKeyM2);
-    // })
 
+//   --- Send to Public Key 2 ---
+        //  Sau khi Client 2 nhan duoc public Key ben Client 1 thi Client 2 gửi lại public Key cho Client 2 
+        let publicKeyM2 = parseInt(document.querySelector(".content-key-public-2").innerText);
+        //      --- Recive Public Key Client 2 ---
+        socket.on("send-public-key-to-client-2", (publicKeyClient2) => {
+            //  ----- Get Private Key form UI Client 2 ----
+            let privateKeyClient2 = parseInt(document.querySelector(".content-key-private").innerText);
 
+            //              ---- Tinh Serect Key Client 2  ----
+            // g^a mod p
+            // mod(g, a, p)
+            //mod(17,19,31)
+            //let serectKeyClient2 = Math.pow(publicKeyClient2, privateKeyClient2) % publicNumberClientAll.p;
+            let serectKeyClient2 = mod(publicKeyClient2,privateKeyClient2,publicNumberClientAll.p);
+            // ---- Render Serect Key ---- 
+            document.querySelector('.content-key-serect').innerText = serectKeyClient2;
+        });
+        //          ---- Thu Tao su kien bang click ----
+        document.getElementById("btn-add-member").addEventListener("click", () => {
+            //   --- Send to Public Key 2 ---
+            //  Sau khi Client 2 nhan duoc public Key ben Client 1 thi Client 2 gửi lại public Key cho Client 2 
+            let publicKeyM2 = parseInt(document.querySelector(".content-key-public-2").innerText);
+            socket.emit("send-public-key-to-server-2", publicKeyM2);
+            console.log("Public Client 2: " + publicKeyM2);
+            document.querySelector(".alert-connect-share-key").style.display = "none";
+
+        })
+       
     /// Chat 
 
     // $("#s-input-chat").keyup(function (event) {
@@ -179,5 +180,15 @@ $(document).ready(() => {
             })
         });
     }
-
+    //          ----- Tinh mod -----
+      function mod(g, a,p) {
+        var res = 1;
+        var i;
+        for (i = 1; i <= a; ++i)
+            res = (res * g) % p;
+        return res;
+    }
+    // g la phan tu sinh , a la so sinh ngau nhien 
+    // g^a mod p
+    //mod(19,18,41)
 });

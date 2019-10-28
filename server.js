@@ -52,12 +52,13 @@ io.on('connection', function (socket) {
     console.log(arrUser);
     io.emit("send-all-id-client", arrUser);
   });
-
+  var idmessage;
   /// Lang nghe client gui thong tin de JOIN vao rom
   socket.on("JOIN", (message) => {
+    
     // ---- Sau khi join vao rom thi se sinh ra so nguyen to P va alpha -----
-    let p = sinhNguyenTo(200);
-    let alpha = sinhAnpha(p);
+    let p = sinhNguyenTo(100000);
+    let alpha = sinhAlpha(p); //sinhAP(p); 
     let publicNumber = {
       p: p,
       alpha: alpha
@@ -74,19 +75,18 @@ io.on('connection', function (socket) {
 
     //     ------ recive Public Key 1 ------
     socket.on("send-public-key-to-server", (publicKey) => {
-      console.log(publicKey)
-      socket.to(message.id).emit('send-public-key-to-client', publicKey);
-
-    });
-
-    //    ---- recive Public Key 2 Sau khi Client 1 nhan public Key ------
-    socket.on("send-public-key-to-server-2", (publicKeyClient2) => {
-      console.log(publicKeyClient2 + " public Key Client 2")
-      socket.to(message.id).emit('send-public-key-to-client-2', publicKeyClient2);
+      //console.log(publicKey)
+    socket.to(message.id).emit('send-public-key-to-client', publicKey);
+    //     ------ End recive Public Key 1 ------
     });
 
   });
+   //    ---- recive Public Key 2 Sau khi Client 1 nhan public Key ------
+  socket.on("send-public-key-to-server-2",(publicKey2)=>{
+    socket.broadcast.emit('send-public-key-to-client-2', publicKey2)
+  });
   
+
   /////     ----- End JOIN event -----
 
   //// Event Chat 
@@ -106,53 +106,65 @@ io.on('connection', function (socket) {
         }
       }
     }
-    //console.log(primes);
-    return primes[Math.floor(Math.random() * (primes.length - 1) + 1)];
+    return primes[Math.floor(Math.random() * (primes.length - 3) + 3)];
   }
   //    ----- END Sinh so nguyen to -----
 
   //    ----- Sinh "ALPHA" tu phan tu "P" -----
-  var arrayNum = [];
-  // Ham sinh phan tu "Anpha" 
-  function sinhAnpha(p) {
+  
+
+  function  sinhAlpha(p){
+    var arrayNum=[];
+      //    ----- ham phan tich nguyen to -----
+    function analyc(p) {
+      for (var i = 2; i <= (p - 1) / 2; i++) {
+        temp = (p - 1) / i; // p-1 là phi cua p
+        if ((p - 1) % i == 0) {
+          arrayNum.push(i);
+        } else {
+          continue;
+        }
+      }
+    }
+    //          ----- Ham tim phan tu sinh cac phan tu sinh cua P  -----
+    function  ArrP(p) {
+      var arrPTS =[];
+      for(var j =1; j<(p-1);j++){
+        arrPTS.push(j);
+      }
+      for(var j = 0; j<arrPTS.length;j++){
+        for (var i = 0; i < arrayNum.length; i++) {
+          if (Math.pow(arrPTS[j], ((p - 1) / arrayNum[i])) % p === 1) {
+            arrPTS.splice(j,1);
+          }
+        }
+      }
+  
+      return arrPTS;
+    }
+    /*
+      Kiểm tra số nguyên tố
+  */
+  function IsPrime(n){
+      if (n < 2)
+          return 0;
+      for (var i = 2; i <= Math.sqrt(n); i++){
+          if (n % i == 0){
+              return 0;
+          }
+      }
+      return 1;
+  }
     analyc(p);
-
-    var checkTruFalse = checkpts(p, Math.floor(Math.random() * (p - 4) + 3));
-    if (checkTruFalse == false) {
-      checkTruFalse = checkpts(p, Math.floor(Math.random() * (p - 4) + 3));
-      if (checkTruFalse == false) {
-        checkTruFalse = checkpts(p, Math.floor(Math.random() * (p - 4) + 3));
-      }
-    }
-    return checkTruFalse;
+    var pp = ArrP(p).filter(function(value){
+      if(IsPrime(value) === 1){
+        return value;
+      };
+    })
+    return pp[Math.floor(Math.random() * (pp.length))];
   }
 
-  function sinhAP(p) {
-    return Math.floor(Math.random() * (p - 2) + 3);
-  }
-  //    ----- ham phan tich nguyen to -----
-  function analyc(p) {
-    for (var i = 2; i <= (p - 1) / 2; i++) {
-      temp = (p - 1) / i; // p-1 là phi cua p
-      if ((p - 1) % i == 0) {
-        arrayNum.push(i);
-      } else {
-        continue;
-      }
-    }
-  }
-
-  //   ----- Ham kiem tra phan tu sinh -----
-  function checkpts(p, alpha) {
-    for (var i = 0; i < arrayNum.length; i++) {
-      if ((alpha ** ((p - 1) / arrayNum[i]) % p) === 1) {
-        //console.log("alpha khong la phan tu sinh");
-        return false;
-      }
-    }
-    return alpha;
-  }
   ///    ----- End sinh "AlPHA" tu phan tu "P" -----
+  //   ----- Ham tim phan tu sinh cac phan tu sinh cua P  -----
 
-
-})
+});
