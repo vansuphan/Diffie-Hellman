@@ -3,9 +3,6 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-// const crypto = require('crypto');
-// const assert = require('assert');
-
 require('dotenv').config();
 var port = process.env.PORT;
 server.listen(port, () => {
@@ -24,16 +21,6 @@ app.get('/', function (req, res) {
   });
 });
 let arrUser = [];
-// class User {
-//   constructor(id, name, rom, message, p, alpha) {
-//     this.id = id,
-//       this.name = name,
-//       this.rom = rom,
-//       this.message = message,
-//       this.p = p,
-//       this.alpha = alpha
-//   }
-// }
 
 io.on('connection', function (socket) {
   socket.join(socket.id);
@@ -55,7 +42,7 @@ io.on('connection', function (socket) {
   var idmessage;
   /// Lang nghe client gui thong tin de JOIN vao rom
   socket.on("JOIN", (message) => {
-    
+
     // ---- Sau khi join vao rom thi se sinh ra so nguyen to P va alpha -----
     let p = sinhNguyenTo(100000);
     let alpha = sinhAlpha(p); //sinhAP(p); 
@@ -67,7 +54,7 @@ io.on('connection', function (socket) {
     socket.join(message.id);
     console.log(socket.id + "Da join vao rom " + message.id);
     //  --- Thong bao da them voa nhom ---
-    io.to(socket.id).emit('ROOM_JOINED', "Da them vao nhom " + message.id);
+    io.to(socket.id).emit('ROOM_JOINED', "Ket noi voi " + message.id);
 
     //     ----- send Public Number -----
     io.in(message.id).emit('Send-to-number-public', publicNumber);
@@ -76,16 +63,16 @@ io.on('connection', function (socket) {
     //     ------ recive Public Key 1 ------
     socket.on("send-public-key-to-server", (publicKey) => {
       //console.log(publicKey)
-    socket.to(message.id).emit('send-public-key-to-client', publicKey);
-    //     ------ End recive Public Key 1 ------
+      socket.to(message.id).emit('send-public-key-to-client', publicKey);
+      //     ------ End recive Public Key 1 ------
     });
 
   });
-   //    ---- recive Public Key 2 Sau khi Client 1 nhan public Key ------
-  socket.on("send-public-key-to-server-2",(publicKey2)=>{
+  //    ---- recive Public Key 2 Sau khi Client 1 nhan public Key ------
+  socket.on("send-public-key-to-server-2", (publicKey2) => {
     socket.broadcast.emit('send-public-key-to-client-2', publicKey2)
   });
-  
+
 
   /////     ----- End JOIN event -----
 
@@ -111,11 +98,10 @@ io.on('connection', function (socket) {
   //    ----- END Sinh so nguyen to -----
 
   //    ----- Sinh "ALPHA" tu phan tu "P" -----
-  
 
-  function  sinhAlpha(p){
-    var arrayNum=[];
-      //    ----- ham phan tich nguyen to -----
+  function sinhAlpha(p) {
+    var arrayNum = [];
+    //    ----- ham phan tich nguyen to -----
     function analyc(p) {
       for (var i = 2; i <= (p - 1) / 2; i++) {
         temp = (p - 1) / i; // p-1 là phi cua p
@@ -126,38 +112,37 @@ io.on('connection', function (socket) {
         }
       }
     }
-    //          ----- Ham tim phan tu sinh cac phan tu sinh cua P  -----
-    function  ArrP(p) {
-      var arrPTS =[];
-      for(var j =1; j<(p-1);j++){
+    //    ----- Ham tim phan tu sinh cac phan tu sinh cua P  -----
+    function ArrP(p) {
+      var arrPTS = [];
+      for (var j = 1; j < (p - 1); j++) {
         arrPTS.push(j);
       }
-      for(var j = 0; j<arrPTS.length;j++){
+      for (var j = 0; j < arrPTS.length; j++) {
         for (var i = 0; i < arrayNum.length; i++) {
           if (Math.pow(arrPTS[j], ((p - 1) / arrayNum[i])) % p === 1) {
-            arrPTS.splice(j,1);
+            arrPTS.splice(j, 1);
           }
         }
       }
-  
       return arrPTS;
     }
     /*
       Kiểm tra số nguyên tố
   */
-  function IsPrime(n){
+    function IsPrime(n) {
       if (n < 2)
+        return 0;
+      for (var i = 2; i <= Math.sqrt(n); i++) {
+        if (n % i == 0) {
           return 0;
-      for (var i = 2; i <= Math.sqrt(n); i++){
-          if (n % i == 0){
-              return 0;
-          }
+        }
       }
       return 1;
-  }
+    }
     analyc(p);
-    var pp = ArrP(p).filter(function(value){
-      if(IsPrime(value) === 1){
+    var pp = ArrP(p).filter(function (value) {
+      if (IsPrime(value) === 1) {
         return value;
       };
     })

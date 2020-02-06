@@ -8,9 +8,9 @@ $(document).ready(() => {
     class User {
         constructor(id, name) {
             this.id = id,
-                this.name = name
+            this.name = name
         }
-    }
+    } 
 
     let socket = io.connect('http://localhost:3000');
     socket.on("send-all-id-client", (arrUser) => {
@@ -64,7 +64,7 @@ $(document).ready(() => {
         let alpha = publicKey.alpha; // phan tu sinh alpha
 
         //      --- Render Public Number ---
-        document.querySelector(".content-key-public").innerText = `(${p},${alpha})`;
+        document.querySelector(".content-key-public").innerText = `( ${p},${alpha} )`;
 
         //      --- Generate Private Key ---
         let privateKey = Math.floor(Math.random() * (p - 4) + 2);//sinhNguyenTo(Math.floor(Math.random() * (p - 3)));

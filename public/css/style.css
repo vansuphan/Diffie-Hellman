@@ -39,12 +39,17 @@ body{
     text-align: right;
     padding-right: 15px;
     transition: all 0.6s;
-    color: #28a745;
+    color: #3282e5d9;
 }
+
 .content-img-member:hover img{
     animation: quay 0.4s;
-    border: 3px solid #28a745 ;
+    border: 3px solid #3282e5d9;
 }
+/* .list-member:hover .content-img-member img{
+    animation: quay 0.4s;
+    border: 3px solid #3282e5d9;
+} */
 @keyframes quay{
     0%{
         transform: rotate(0deg);
@@ -94,7 +99,7 @@ h3#s-name-and-id-user {
 }
 #s-name-and-id-user >p {
     justify-content: center;
-    color: #28a745;
+    color: #0072ff;
     font-size: 20px;
     margin: 0px;
     align-items: center;
@@ -108,9 +113,6 @@ h3#s-name-and-id-user {
     padding: 1em;
 }
 .s-form-keys{
-    overflow-y: scroll;
-    overflow-x: scroll;
-    scroll-behavior: smooth;
     min-height: 16rem;
     max-height: 16rem;
     padding: 1em;
@@ -142,6 +144,20 @@ span.s-message-recive,span.s-message-send {
 .form-crew{
     padding: 0;
     padding-left: 40px;
+}
+.key-public,.key-public-2,.key-private,.key-serect{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.key-public >span, .key-public-2 >span, .key-private >span, .key-serect >span{
+    margin-bottom: 10px;
+    font-weight: 900;
+}
+.key-public >h5, .key-public-2 >h5, .key-private >h5, .key-serect >h5 {
+    width: 70%;
+    padding: 10px;
+    background-color: #e9ad9061;
 }
 .content-key-public{
     color: #28a745;
